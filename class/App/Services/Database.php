@@ -4,6 +4,7 @@ namespace App\Services;
 
 use PDO;
 use PDOExeption;
+require_once "./config.php";
 
 class Database
 {
