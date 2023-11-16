@@ -1,44 +1,46 @@
 <?php
 namespace App\Models;
+use App\Models\AbstractTable;
 
-use App\Services\Database;
-
-class Picture
+class Picture extends AbstractTable
 {
-    private $db;
+    private ?string $title = null;
+    private ?string $description = null;
+    private ?string $src = null;
+    private ?string $author = null;
+    private ?string $createdAt = null;
+    private ?string $updatedAt = null;
 
-    public function __construct(){
-        $this->db = new Database();
+    public function setTitle($title){
+        $this->title = $title;
     }
 
-    public function getAll($nb=null)
-    {
-        $limit = !is_null($nb) ? "LIMIT " . $nb : "";
-        $pictures = [];
-        $pictures = $this->db->selectAll("SELECT * from picture ORDER BY id DESC ". $limit);
-        return $pictures;
+    public function setDescription($description){
+        $this->description = $description;
     }
 
-    public function getOneById($id=null)
-    {
-        $whereId = !is_null($id) ? "WHERE id=?" : "";
-        $picture = [];
-        $picture = $this->db->select("SELECT * from picture ". $whereId. "LIMIT 1",[$id]);
-        return $picture;
+    public function setSrc($src){
+        $this->src = $src;
     }
 
-    public function insert($data=[])
-    {
-        $addPic = $this->db->query("INSERT INTO picture (title, description, src, author) VALUES (?,?,?,?)",$data);
-        return $addPic;
+    public function setAuthor($author){
+        $this->author = $author;
     }
 
-    public function delete($id=null)
-    {
-        if (!is_null($id)) {
-        $this->db->query("DELETE FROM picture WHERE id=?",[$id]);
-        return true;
-        }
-        return false;
+    public function setUpdatedAt(){
+        $this->updatedAt = date("Y-m-d H:i:s");
     }
+
+    public function toArray(){
+        $picArray = [
+            $this->title,
+            $this->description,
+            $this->src,
+            $this->author,
+            $this->updatedAt
+        ];
+        return $picArray;
+    }
+
+    
 }
