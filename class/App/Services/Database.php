@@ -3,13 +3,14 @@
 namespace App\Services;
 
 use PDO;
-use PDOExeption;
+use PDOException;
+
 require_once "./config.php";
 
 class Database
 {
 
-    // propriétés de notre classe
+    // propriétés de notre class
     private $db_host;
     private $db_name;
     private $db_port;
@@ -19,15 +20,15 @@ class Database
     // propriété du DSN
     private $db_dsn;
 
-    // PDO qu'on connaît bien les amis ;)
+    // PDO qu'on connait bien les amis ;)
     private $pdo;
 
     public function __construct(
-        $db_host = 'localhost',
-        $db_port = '',
-        $db_name = 'dwwm_23_10_19',
-        $db_user = 'root',
-        $db_pass = ''
+        $db_host = DB_HOST,
+        $db_port = DB_PORT,
+        $db_name = DB_NAME,
+        $db_user = DB_USER,
+        $db_pass = DB_PASS
     ) {
         $this->db_host = $db_host;
         $this->db_port = $db_port;
@@ -43,8 +44,8 @@ class Database
             try {
                 $db = new PDO($this->db_dsn, $this->db_user, $this->db_pass);
                 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            } catch (\PDOException $e) {
-                echo "Oups PDO l'est pas content: " . $e->getMessage();
+            } catch (PDOException $e) {
+                print_r("Oups PDO l'est pas content: " . iconv('ISO-8859-1','UTF-8',$e->getMessage()));
                 die();
             }
             $this->pdo = $db;

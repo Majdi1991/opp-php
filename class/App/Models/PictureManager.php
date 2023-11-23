@@ -1,50 +1,17 @@
 <?php
 namespace App\Models;
 
+use App\Models\Picture;
 use App\Services\Database;
+use App\Models\AbstractManager;
 
-class PictureManager
+class PictureManager extends AbstractManager
 {
-    private $db;
 
     public function __construct(){
-        $this->db = new Database();
-    }
-
-    public function getAll($nb=null)
-    {
-        $limit = !is_null($nb) ? "LIMIT " . $nb : "";
-        $pictures = [];
-        $pictures = $this->db->selectAll("SELECT * from picture ORDER BY id DESC ". $limit);
-        return $pictures;
-    }
-
-    public function getOneById($id=null)
-    {
-        $whereId = !is_null($id) ? "WHERE id=?" : "";
-        $picture = [];
-        $picture = $this->db->select("SELECT * from picture ". $whereId. "LIMIT 1",[$id]);
-        return $picture;
-    }
-
-    public function insert($data=[])
-    {
-        $addPic = $this->db->query("INSERT INTO picture (title, description, src, author) VALUES (?,?,?,?)",$data);
-        return $addPic;
-    }
-
-    public function update($data=[]){
-        $updatePic = $this->db->query("UPDATE picture SET title=?, description=?, src=?, author=?, updated_at=? WHERE id=?",$data);
-        return $updatePic;
-    }
-
-    public function delete($id=null)
-    {
-        if (!is_null($id)) {
-        $this->db->query("DELETE FROM picture WHERE id=?",[$id]);
-        return true;
-        }
-        return false;
+        self::$db = new Database();
+        self::$tableName = 'picture';
+        self::$obj = new Picture();
     }
 
 }

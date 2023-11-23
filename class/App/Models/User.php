@@ -1,24 +1,28 @@
 <?php
 namespace App\Models;
 use App\Models\AbstractTable;
+use App\Models\UserManager;
 
 class User extends AbstractTable{
 
-    private ?string $name = null;
-    private ?string $email = null;
-    private ?string $password = null;
-    private ?array $roles = [];
+    protected ?string $name = null;
+    protected ?string $email = null;
+    protected ?string $password = null;
+    protected ?string $roles = null;
 
     public function setName(?string $name){
         $this->name = $name;
+        return $this;
     }
 
-    public function getName(){
+    public function getName(): string
+    {
         return $this->name;
     }
 
     public function setEmail(?string $email){
         $this->email = $email;
+        return $this;
     }
 
     public function getEmail(){
@@ -27,35 +31,46 @@ class User extends AbstractTable{
 
     public function setPassword(?string $password){
         $this->password = $password;
+        return $this;
     }
 
     public function getPassword(){
         return $this->password;
     }
 
-    public function setRoles(?array $roles){
+    public function setRoles(?string $roles){
         $this->roles = $roles;
+        return $this;
     }
 
-    public function getRoles(){
+    public function getRoles(): string
+    {
         return $this->roles;
     }
 
-    public function toArray(){
+    public function toArray():array
+    {
         $userArray = [
-            $this->name,
-            $this->email,
-            password_hash($this->password,PASSWORD_DEFAULT)
+            $this->getName(),
+            $this->getEmail(),
+            $this->getPassword(),
+            $this->getRoles()
         ];
         return $userArray;
     }
 
     public function validate() : array
     {
-        $errors = [];
+
         /**
          * Pléthore de vérifications dans tous les sens
          */
+        $errors = [];
+        $userManager = new UserManager();
+        $user = $userManager->getUserByEmail($this->email);
+        if ($user){
+            $errors[] = "Cette adresse email existe déjà.";
+        }
         // Si le nom est inférieur à 3 caractères => error
         if (strlen($this->name) < 3){
             $errors[] = "Le champs nom est obligatoire, merci.";
@@ -70,4 +85,5 @@ class User extends AbstractTable{
         }
         return $errors;
     }
+
 }

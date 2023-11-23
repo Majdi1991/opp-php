@@ -1,26 +1,26 @@
 <?php
 namespace App\Models;
+
+use App\Models\AbstractManager;
 use App\Services\Database;
-class UserManager
+use App\Models\User;
+
+class UserManager extends AbstractManager
 {
-    private $db;
 
     public function __construct(){
-        $this->db = new Database();
+        self::$db = new Database();
+        self::$tableName = 'user';
+        self::$obj = new User();
     }
 
-    public function getAll($nb=null)
+    public function getUserByEmail($email = null): array|false
     {
-        $limit = !is_null($nb) ? "LIMIT " . $nb : "";
-        $pictures = [];
-        $pictures = $this->db->selectAll("SELECT * from user ORDER BY id DESC ". $limit);
-        return $pictures;
+        $whereEmail = !is_null($email) ? "WHERE email=?" : "";
+        $row = [];
+        $row = self::$db->select("SELECT * FROM ".self::$tableName." " . $whereEmail. "LIMIT 1", [$email]);
+        return $row;
     }
 
-    public function insert($data=[])
-    {
-        $addUser = $this->db->query("INSERT INTO user (name, email, password) VALUES (?,?,?)",$data);
-        return $addUser;
-    }
 
 }
